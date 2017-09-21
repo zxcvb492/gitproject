@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Category
 import markdown
+from comments.forms import CommentForm
 
 # Create your views here.
 def index(request):
@@ -14,8 +15,15 @@ def detail(request, pk):
 	                                                                            "markdown.extensions.extra",
 	                                                                            "markdown.extensions.codehilite",
 	                                                                            "markdown.extensions.toc",
-	                                                               ])                 
-	return render( request, "blog/detail.html", context={ "post": post } )
+	                                                               ])
+	print('uu')
+	form = CommentForm()
+	comment_list = post.comment_set.all()
+	context = { 'post': post,
+                        'form': form,
+                        'comment_list': comment_list
+                        }
+	return render( request, "blog/detail.html", context=context )
 	
 #  时间归档视图函数
 def archives(request, year, month):
